@@ -43,7 +43,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 		return []store.DataTransaction{}, err
 	}
 
-	if state.Phase != "WRK" {
+	if state.Phase != "WRK" || state.WorkBalance != "N" {
 		fmt.Println("PrivatBankAPI.GetTransactions Privanbank is not in the WRK State!")
 		return []store.DataTransaction{}, nil
 	}
@@ -185,7 +185,16 @@ func (a PrivatBankAPI) GetState() (store.DataState, error) {
 
 		// fmt.Println(string(data))
 
-		datastate := store.DataState{Status: responseData.Status, Type: responseData.Type, Phase: responseData.Settings.Phase}
+		datastate := store.DataState{
+			Status:             responseData.Status,
+			Type:               responseData.Type,
+			Phase:              responseData.Settings.Phase,
+			Today:              responseData.Settings.Today,
+			LastDay:            responseData.Settings.LastDay,
+			WorkBalance:        responseData.Settings.WorkBalance,
+			ServerDateTime:     responseData.Settings.ServerDateTime,
+			DateFinalStatement: responseData.Settings.DateFinalStatement,
+		}
 		//db.SaveState(datastate)
 
 		return datastate, nil

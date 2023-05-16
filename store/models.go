@@ -13,9 +13,14 @@ type Account struct {
 
 // some banks can return state of exchange in own format and this universal state we can save to db
 type DataState struct {
-	Status string
-	Type   string
-	Phase  string
+	Status             string
+	Type               string
+	Phase              string
+	Today              string
+	LastDay            string
+	WorkBalance        string
+	ServerDateTime     string
+	DateFinalStatement string
 }
 
 // info about one transaction which ready to save to db
