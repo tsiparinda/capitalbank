@@ -138,6 +138,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							BankRegistr: a.BankRegistr,
 							CntrCode:    responseData.Transactions[i].AUT_CNTR_CRF,
 							CntrName:    responseData.Transactions[i].AUT_CNTR_NAM,
+							CntrAcc:     responseData.Transactions[i].AUT_CNTR_ACC,
 							Comment:     responseData.Transactions[i].OSND,
 							DateTran:    responseData.Transactions[i].DAT_OD,
 							ID:          responseData.Transactions[i].ID,

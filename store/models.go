@@ -29,6 +29,7 @@ type DataTransaction struct {
 	BankRegistr string // registr of bank account in the capital2010
 	CntrCode    string // OKPO, INN...
 	CntrName    string // Nmae
+	CntrAcc     string //  Account
 	DateTran    string // date in our account
 	Comment     string // comment
 	SumTran     int64  // SUMMA in national currency
