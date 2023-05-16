@@ -6,21 +6,13 @@ import (
 	"capitalbank/store"
 )
 
-func GetParams() error {
+func StartExchange() error {
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
 		return err
 	}
 	for _, a := range acc {
-		// Unmarshal the data into the struct
-		// b, err := json.MarshalIndent(a, "", "  ")
-		// if err != nil {
-		// 	log.Println(err)
-		// 	return err
-		// }
-		//fmt.Println(string(b))
-
 		switch a.Bank {
 		case "privat":
 			if a.Token.Valid == true {
@@ -33,7 +25,7 @@ func GetParams() error {
 					BankRegistr: a.BankRegistr,
 					Direction:   a.Direction,
 				}
-				//privat.GetState()
+
 				tran, err := privat.GetTransactions()
 				if err == nil {
 					store.SaveTransactions(tran)

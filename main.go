@@ -1,12 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"capitalbank/config"
 	"capitalbank/db"
 	"capitalbank/logger"
 	"capitalbank/logic"
+	"fmt"
+	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -15,10 +17,15 @@ func main() {
 		fmt.Println("Database connection is not active")
 		os.Exit(1)
 	}
-	
+
 	// trace, debug, info, warn, error, fatal, panic
 	loglevel := config.Config["logLevel"].(string)
-	logger.SetLogLevel(loglevel)
+	level, err := logrus.ParseLevel(loglevel)
+	if err != nil {
+		fmt.Printf("Error parsing level: %v\n", err)
+		return
+	}
+	logger.Log.SetLevel(level)
 
 	fields := make(map[string]interface{})
 	fields["logLevel"] = logger.Log.GetLevel()
@@ -26,5 +33,5 @@ func main() {
 	fields["location"] = "Auroville"
 	logger.Log.WithFields(fields).Info("Program was started")
 
-	logic.GetParams()
+	logic.StartExchange()
 }

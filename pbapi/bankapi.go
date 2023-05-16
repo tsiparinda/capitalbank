@@ -5,6 +5,7 @@ import (
 	"capitalbank/logger"
 	pb_models "capitalbank/pbapi/models"
 	"capitalbank/store"
+	"capitalbank/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -47,26 +48,36 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 		return []store.DataTransaction{}, nil
 	}
 
+	// init vars
 	datatrans := []store.DataTransaction{}
-	// Create a new instance of ResponseData
-
 	var followId string
 
 	limit := 10
-	dateTo := time.Now()
-	var intreqdays int
 	// take requestdays from config file and convert to int
-	if reqdays, ok := config.Config["requestDays"].(float64); ok {
+	if value, ok := config.Config["RowsInPack"].(float64); ok {
 		// The value is a float64, handle it accordingly
-		intreqdays = int(reqdays)
+		limit = int(value)
 	} else {
 		logger.Log.WithFields(logrus.Fields{
-			"reqdays": reqdays,
-		}).Fatalf("Error loading reqdays from config:", err.Error())
+			"rowsinpack": value,
+		}).Infof("Error loading reqdays from config:", err.Error())
 	}
 
-	dateFrom := dateTo.AddDate(0, 0, -intreqdays)
-
+	var reqdays int
+	// take requestdays from config file and convert to int
+	if value, ok := config.Config["RequestDays"].(float64); ok {
+		// The value is a float64, handle it accordingly
+		reqdays = int(value)
+	} else {
+		logger.Log.WithFields(logrus.Fields{
+			"reqdays": value,
+		}).Infof("Error loading reqdays from config:", err.Error())
+		reqdays = 1
+	}
+	dateTo := time.Now()
+	dateFrom := dateTo.AddDate(0, 0, -reqdays)
+	//	dateTo = dateTo.AddDate(0, 0, 1)
+	//main cycle for receive all of packages
 	for {
 		responseData := pb_models.TransactionResponseData{}
 		url, _ := a.CombineURL(
@@ -79,13 +90,19 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 				Limit:     limit})
 		req, _ := http.NewRequest("GET", url, nil)
 
-		//fmt.Printf("url:", url)
+		//	fmt.Printf("url:", url)
+
+		logger.Log.WithFields(logrus.Fields{
+			"url": url,
+		}).Debugf("Request URL to take transactions:", url)
 
 		req.Header.Add("User-Agent", a.UserAgent)
 		req.Header.Add("token", a.Token)
 		req.Header.Add("Content-Type", a.ContentType)
 
 		res, err := http.DefaultClient.Do(req)
+		// contentType := res.Header.Get("Content-Type")
+		// fmt.Printf("encoding: ", contentType)
 		if err != nil {
 			fmt.Printf("The HTTP request failed with error %s\n", err)
 			return []store.DataTransaction{}, err
@@ -100,14 +117,16 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 				fmt.Println(err.Error())
 				//return []api.Transaction{}, err
 			}
-			// Unmarshal the data into the struct
-			// b, err := json.MarshalIndent(responseData, "", "  ")
-			// if err != nil {
-			// 	log.Println(err)
-			// 	return []store.DataTransaction{}, err
-			// }
-			// fmt.Println(string(b))
-			//fmt.Println(responseData)
+
+			for i, _ := range responseData.Transactions {
+				//save data to logs if debug level
+				result, err := utils.StructToMap(responseData.Transactions[i])
+				if err != nil {
+					fmt.Printf(err.Error())
+				}
+				result["bank"] = "privat"
+				logger.Log.WithFields(result).Tracef("GET: ", url)
+			}
 
 			for i, _ := range responseData.Transactions {
 				if responseData.Transactions[i].PR_PR == "r" && responseData.Transactions[i].FL_REAL == "r" {
@@ -136,6 +155,8 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 		followId = responseData.NextPageID
 
 	}
+	trancount := len(datatrans)
+	logger.Log.WithFields(logrus.Fields{}).Debugf("It was received %v transactions", trancount)
 
 	return datatrans, nil
 }

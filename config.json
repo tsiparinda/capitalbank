@@ -2,6 +2,7 @@
     "driverName": "sqlserver",
     "connectionStr": "server=bold;database=capital2010;Integrated Security=SSPI",
     "TIPS_logLevel": "Trace Debug info Warn Error Fatal Panic",
-    "logLevel": "Debug",
-    "requestDays": 3
+    "logLevel": "Trace",
+    "RequestDays": 0,
+    "RowsInPack": 100
 }

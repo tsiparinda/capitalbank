@@ -18,7 +18,7 @@ func LoadAccounts(acc *[]Account) error {
 	defer db.Close()
 
 	// Select data from database
-	rows, err := db.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts")
+	rows, err := db.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts where fAct=1")
 	if err != nil {
 		fmt.Println("Error loading accounts from database:", err.Error())
 		return err
