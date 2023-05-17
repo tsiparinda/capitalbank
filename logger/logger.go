@@ -83,10 +83,12 @@ func init() {
 	// }
 
 	Log.AddHook(hook)
-	Log.SetFormatter(&logrus.TextFormatter{
-		DisableColors: true,
-		ForceColors:   false,
-	})
+	// Log.SetFormatter(&logrus.TextFormatter{
+	// 	DisableColors: true,
+	// 	ForceColors:   false,
+	// })
+
+	Log.SetFormatter(&logrus.JSONFormatter{})
 
 	// trace, debug, info, warn, error, fatal, panic
 	loglevel := config.Config["logLevel"].(string)
