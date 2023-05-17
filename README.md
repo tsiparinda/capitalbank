@@ -1,6 +1,6 @@
-# capitalbank
+# Capital Bank
 
-comman-line module for exchange information with banks
+This is a comman-line application for exchange information between ERP Capital and banks
 
 ## Sources
 ### PrivatBank
