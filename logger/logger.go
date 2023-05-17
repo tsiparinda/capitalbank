@@ -66,7 +66,7 @@ func (h *MSSQLHook) Fire(entry *logrus.Entry) error {
 		return err
 	}
 
-	query := `INSERT INTO bank_logs (loglevel, message, params, time)VALUES (@p1, @p2, @p3, @p4)`
+	query := `INSERT INTO bank_logs (loglevel, message, params, timestamp)VALUES (@p1, @p2, @p3, @p4)`
 	_, err = db.DB.Exec(query,
 		sql.Named("p1", entry.Level.String()),
 		sql.Named("p2", message),
