@@ -51,15 +51,21 @@ func (h *MSSQLHook) Fire(entry *logrus.Entry) error {
 
 	params, err := json.Marshal(entry.Data) // Convert the Fields map to a JSON string
 	if err != nil {
+		fmt.Println("Logger.Fire: Error Marshall entry.Data")
 		return err
 	}
 
-	message, _ := utf8ToWin1251(entry.Message)
-	// if err != nil {
-	// 	// handle error
-	// }
-	fmt.Println(entry.Message)
-	fmt.Println(message)
+	message, _ := EncodeWindows1251([]uint8(entry.Message))
+	if err != nil {
+		fmt.Println("Logger.Fire: Error EncodeWindows1251 Message")
+		return err
+	}
+	params, err = EncodeWindows1251(params)
+	if err != nil {
+		fmt.Println("Logger.Fire: Error EncodeWindows1251 Params")
+		return err
+	}
+
 	query := `INSERT INTO bank_logs (loglevel, message, params, time)VALUES (@p1, @p2, @p3, @p4)`
 	_, err = db.DB.Exec(query,
 		sql.Named("p1", entry.Level.String()),
@@ -122,10 +128,19 @@ func SetLogLevel(level string) {
 }
 
 func utf8ToWin1251(input string) (string, error) {
-	decoder := charmap.Windows1251.NewDecoder()
+	decoder := charmap.Windows1251.NewEncoder()
 	output, err := decoder.String(input)
 	if err != nil {
 		return "", err
 	}
 	return output, nil
+}
+
+func EncodeWindows1251(ba []uint8) ([]uint8, error) {
+	enc := charmap.Windows1251.NewEncoder()
+	out, err := enc.String(string(ba))
+	if err != nil {
+		return []uint8(""), err
+	}
+	return []uint8(out), nil
 }
