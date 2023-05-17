@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"capitalbank/config"
 	"capitalbank/db"
 	"database/sql"
 	"encoding/json"
@@ -29,6 +30,16 @@ import (
 // fields["ID"] = data[i].ID
 // fields["TranType"] = data[i].TranType
 // logger.Log.WithFields(fields).Debug("Try to save record")
+// or
+// for i, _ := range responseData.Transactions {
+// 	//save data to logs if debug level
+// 	result, err := utils.StructToMap(responseData.Transactions[i])
+// 	if err != nil {
+// 		fmt.Printf(err.Error())
+// 	}
+// 	result["bank"] = "privat"
+// 	logger.Log.WithFields(result).Tracef("GET: ", url)
+// }
 
 type MSSQLHook struct{}
 
@@ -74,7 +85,18 @@ func init() {
 	Log.AddHook(hook)
 	Log.SetFormatter(&logrus.TextFormatter{
 		DisableColors: true,
+		ForceColors:   false,
 	})
+
+	// trace, debug, info, warn, error, fatal, panic
+	loglevel := config.Config["logLevel"].(string)
+	level, err := logrus.ParseLevel(loglevel)
+	if err != nil {
+		fmt.Printf("Error parsing level: %v\n", err)
+		loglevel = "Warn"
+		level, _ = logrus.ParseLevel(loglevel)
+	}
+	Log.SetLevel(level)
 
 }
 
