@@ -36,3 +36,29 @@ type DataTransaction struct {
 	ID          string // unique number
 	TranType    string // D, C
 }
+
+type DataBalance struct {
+	Direction      int    // `json:"Capital_Direction"`
+	BankRegistr    string // registr of bank account in the capital2010
+	Acc            string // account number
+	Currency       string // UAH
+	BalanceIn      int64  // balance on begin of day
+	BalanceInEq    int64  // in national currence
+	BalanceOut     int64
+	BalanceOutEq   int64
+	TurnoverDebt   int64
+	TurnoverDebtEq int64
+	TurnoverCred   int64
+	TurnoverCredEq int64
+	// BgfIBrnm       string
+	// Brnm           string
+	// Dpd            string // date-time of last acc's move
+	NameACC        string // name of account
+	// State          string // 1
+	// Atp            string // D
+	// Flmn           string // DN
+	// DateOpenAccReg string
+	// DateOpenAccSys string
+	// DateCloseAcc   string
+	IsFinalBal     bool // !!!
+}

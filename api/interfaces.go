@@ -12,7 +12,7 @@ import "capitalbank/store"
 
 type BankAPI interface {
 	GetState() (store.DataState, error)
-	GetBalance() (int64, error)
+	GetBalance()  ([]store.DataBalance, error) 
 	GetTransactions() ([]store.DataTransaction, error)
 }
 
