@@ -2,6 +2,7 @@ package logic
 
 import (
 	"capitalbank/api"
+	// "capitalbank/logger"
 	"capitalbank/pbapi"
 	"capitalbank/store"
 )
@@ -30,6 +31,8 @@ func StartExchange() error {
 				if err == nil {
 					store.SaveTransactions(tran)
 				}
+				privat.GetBalance()
+				//logger.Log.Debugf("!!!!!!!!!!!!!!!!!!!!!!!!!!!bal:   ", bal)
 			}
 		}
 	}

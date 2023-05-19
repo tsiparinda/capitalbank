@@ -52,13 +52,14 @@ type DataBalance struct {
 	TurnoverCredEq int64
 	// BgfIBrnm       string
 	// Brnm           string
-	// Dpd            string // date-time of last acc's move
-	NameACC        string // name of account
+	Dpd            string // date 
+	NameACC string // name of account
 	// State          string // 1
 	// Atp            string // D
 	// Flmn           string // DN
 	// DateOpenAccReg string
 	// DateOpenAccSys string
 	// DateCloseAcc   string
-	IsFinalBal     bool // !!!
+	IsFinalBal bool   // !!!
+	Source     string // C- Capital; B- Bank
 }

@@ -72,7 +72,7 @@ func (a PrivatBankAPI) GetBalance() ([]store.DataBalance, error) {
 		}).Infof("Error loading reqdays from config:", err.Error())
 		reqdays = 1
 	}
-	reqdays = 30
+	reqdays = 3
 	dateTo := time.Now()
 	dateFrom := dateTo.AddDate(0, 0, -reqdays)
 	//	dateTo = dateTo.AddDate(0, 0, 1)
@@ -154,8 +154,10 @@ func (a PrivatBankAPI) GetBalance() ([]store.DataBalance, error) {
 						TurnoverDebtEq: turnoverDebtEq,
 						TurnoverCred:   turnoverCred,
 						TurnoverCredEq: turnoverCredEq,
+						Dpd:            responseData.Balances[i].Dpd,
 						NameACC:        responseData.Balances[i].NameACC,
 						IsFinalBal:     responseData.Balances[i].IsFinalBal,
+						Source:         "B",
 					})
 
 			}
