@@ -68,15 +68,18 @@ func StartUpdateBalance() error {
 				}
 				// get balance by dates from bank's server
 				bal, _ := privat.GetBalance(earliestBADdate)
-				//save balance
+				// fmt.Printf("bal %v \n", bal)
 
+				//save balance
+				store.SaveBalance(bal)
+				
 				// trace info to logs
 				// result, err := utils.StructToMap(bal)
 				// if err != nil {
 				// 	fmt.Printf(err.Error())
 				// }
 				// logger.Log.WithFields(result).Tracef("GetBalance: ")
-				fmt.Printf("bal %v \n", bal)
+				
 				// if err == nil {
 				// 	store.SaveTransactions(tran)
 				// }
