@@ -3,7 +3,6 @@ package store
 import (
 	"capitalbank/db"
 	"capitalbank/logger"
-	"database/sql"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/sirupsen/logrus"
@@ -35,40 +34,38 @@ func SaveBalance(data []DataBalance) {
 	// }
 
 	for i, _ := range data {
-		func insertIntoBankBalances(db *sql.DB, data DataBalance) error {
-			_, err := db.Exec("EXEC dbo.InsertIntoBankBalances @BankRegistr=@p1, @Dpd=@p2, @Source=@p3, @Acc=@p4, @Currency=@p5, @BalanceIn=@p6, @BalanceInEq=@p7, @BalanceOut=@p8, @BalanceOutEq=@p9, @TurnoverDebt=@p10, @TurnoverDebtEq=@p11, @TurnoverCred=@p12, @TurnoverCredEq=@p13, @IsFinalBal=@p14", 
-			data.BankRegistr, 
-			data.Dpd, 
-			data.Source, 
-			data.Acc, 
-			data.Currency, 
-			data.BalanceIn, 
-			data.BalanceInEq, 
-			data.BalanceOut, 
-			data.BalanceOutEq, 
-			data.TurnoverDebt, 
-			data.TurnoverDebtEq, 
-			data.TurnoverCred, 
-			data.TurnoverCredEq, 
-			data.IsFinalBal)
-			return err
-		}
-		
+
+		_, err := db.DB.Exec("EXEC dbo.InsertIntoBankBalances @BankRegistr=@p1, @Dpd=@p2, @Source=@p3, @Acc=@p4, @Currency=@p5, @BalanceIn=@p6, @BalanceInEq=@p7, @BalanceOut=@p8, @BalanceOutEq=@p9, @TurnoverDebt=@p10, @TurnoverDebtEq=@p11, @TurnoverCred=@p12, @TurnoverCredEq=@p13, @IsFinalBal=@p14",
+			data[i].BankRegistr,
+			data[i].Dpd,
+			data[i].Source,
+			data[i].Acc,
+			data[i].Currency,
+			data[i].BalanceIn,
+			data[i].BalanceInEq,
+			data[i].BalanceOut,
+			data[i].BalanceOutEq,
+			data[i].TurnoverDebt,
+			data[i].TurnoverDebtEq,
+			data[i].TurnoverCred,
+			data[i].TurnoverCredEq,
+			data[i].IsFinalBal)
+
 		// Insert data into database
-		_, err := db.DB.Exec("exec bank_AddBalance @Direction, @BankRegistr, @CntrCode, @CntrName, @CntrAcc, @DateTran, @Comment, @SumTran, @ID, @TranType",
-			sql.Named("Direction", data[i].Direction),
-			sql.Named("BankRegistr", data[i].BankRegistr),
-			sql.Named("CntrCode", data[i].CntrCode),
-			sql.Named("CntrName", data[i].CntrName),
-			sql.Named("CntrAcc", data[i].CntrAcc),
-			sql.Named("DateTran", data[i].DateTran),
-			sql.Named("Comment", data[i].Comment),
-			sql.Named("SumTran", data[i].SumTran),
-			sql.Named("ID", data[i].ID),
-			sql.Named("TranType", data[i].TranType))
+		// _, err := db.DB.Exec("exec bank_AddBalance @Direction, @BankRegistr, @CntrCode, @CntrName, @CntrAcc, @DateTran, @Comment, @SumTran, @ID, @TranType",
+		// 	sql.Named("Direction", data[i].Direction),
+		// 	sql.Named("BankRegistr", data[i].BankRegistr),
+		// 	sql.Named("CntrCode", data[i].CntrCode),
+		// 	sql.Named("CntrName", data[i].CntrName),
+		// 	sql.Named("CntrAcc", data[i].CntrAcc),
+		// 	sql.Named("DateTran", data[i].DateTran),
+		// 	sql.Named("Comment", data[i].Comment),
+		// 	sql.Named("SumTran", data[i].SumTran),
+		// 	sql.Named("ID", data[i].ID),
+		// 	sql.Named("TranType", data[i].TranType))
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
-				"ID": data[i].ID,
+				"BankRegistr": data[i].BankRegistr,
 			}).Errorf("Error inserting data into database:", err.Error())
 		}
 	}
