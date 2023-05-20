@@ -1,6 +1,9 @@
 package api
 
-import "capitalbank/store"
+import (
+	"capitalbank/store"
+	"time"
+)
 
 // In this example, BankAPI is an interface with methods for getting the balance and transactions.
 // Transaction is another interface with methods for getting the transaction ID and amount.
@@ -12,7 +15,7 @@ import "capitalbank/store"
 
 type BankAPI interface {
 	GetState() (store.DataState, error)
-	GetBalance()  ([]store.DataBalance, error) 
+	GetBalance(time.Time) ([]store.DataBalance, error)
 	GetTransactions() ([]store.DataTransaction, error)
 }
 

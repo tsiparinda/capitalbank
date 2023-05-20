@@ -21,5 +21,6 @@ func main() {
 	fields["location"] = "Earth"
 	logger.Log.WithFields(fields).Info("Program was started")
 
-	logic.StartExchange()
+	//logic.StartExchangeTran()
+	logic.StartUpdateBalance()
 }

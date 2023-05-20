@@ -2,17 +2,19 @@ package logic
 
 import (
 	"capitalbank/api"
+
 	// "capitalbank/logger"
 	"capitalbank/pbapi"
 	"capitalbank/store"
 )
 
-func StartExchange() error {
+func StartExchangeTran() error {
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
 		return err
 	}
+	//get and save transactions
 	for _, a := range acc {
 		switch a.Bank {
 		case "privat":
@@ -31,8 +33,6 @@ func StartExchange() error {
 				if err == nil {
 					store.SaveTransactions(tran)
 				}
-				privat.GetBalance()
-				//logger.Log.Debugf("!!!!!!!!!!!!!!!!!!!!!!!!!!!bal:   ", bal)
 			}
 		}
 	}

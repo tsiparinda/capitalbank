@@ -1,14 +1,24 @@
 package store
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 // this data is loaded from db as list of bank's account and their parameters
 type Account struct {
-	Direction   int
-	Account     string
-	Bank        string
-	Token       sql.NullString
-	BankRegistr string
+	Direction    int
+	Account      string
+	Bank         string
+	Token        sql.NullString
+	BankRegistr  string
+	BalanceState []DataCheckBalance
+}
+
+type DataCheckBalance struct {
+	Dpd         time.Time // date
+	BankRegistr string    // registr of bank account in the capital2010
+	FBAD        bool      // state  of bank account's saldo in the capital2010
 }
 
 // some banks can return state of exchange in own format and this universal state we can save to db
@@ -52,7 +62,7 @@ type DataBalance struct {
 	TurnoverCredEq int64
 	// BgfIBrnm       string
 	// Brnm           string
-	Dpd            string // date 
+	Dpd     string // date
 	NameACC string // name of account
 	// State          string // 1
 	// Atp            string // D

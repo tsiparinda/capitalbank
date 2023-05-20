@@ -1,22 +1,15 @@
 package pbapi
 
 import (
+	pb_models "capitalbank/pbapi/models"
 	"fmt"
 	neturl "net/url"
 	"strconv"
-	"time"
 )
 
-type PbURL struct {
-	URL       string
-	Acc       string
-	StartDate time.Time
-	EndDate   time.Time
-	FollowId  string
-	Limit     int
-}
 
-func (a PrivatBankAPI) CombineURL(us PbURL) (url string, err error) {
+
+func (a PrivatBankAPI) CombineURL(us pb_models.PbURL) (url string, err error) {
 	err = nil
 
 	values := neturl.Values{}

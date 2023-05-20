@@ -1,26 +1,18 @@
 package store
 
 import (
-	"database/sql"
-	"fmt"
+	"capitalbank/db"
+	"capitalbank/logger"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
 func LoadAccounts(acc *[]Account) error {
 
-	// Connect to database
-	db, err := sql.Open("sqlserver", "server=bold;database=capital2010;Integrated Security=SSPI")
-	if err != nil {
-		fmt.Println("Error opening database:", err.Error())
-		return err
-	}
-	defer db.Close()
-
 	// Select data from database
-	rows, err := db.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts where fAct=1")
+	rows, err := db.DB.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts where fAct=1")
 	if err != nil {
-		fmt.Println("Error loading accounts from database:", err.Error())
+		logger.Log.Errorf("Error loading accounts from database:", err.Error())
 		return err
 	}
 	defer rows.Close()
@@ -30,7 +22,7 @@ func LoadAccounts(acc *[]Account) error {
 		// Scan each column into the corresponding field of an Account. Adjust this line as needed based on your table structure.
 		err = rows.Scan(&a.Direction, &a.Account, &a.Bank, &a.Token, &a.BankRegistr)
 		if err != nil {
-			fmt.Println("Error scanning accounts rows:", err.Error())
+			logger.Log.Errorf("Error scanning accounts rows:", err.Error())
 			return err
 		}
 		*acc = append(*acc, a)
@@ -38,7 +30,7 @@ func LoadAccounts(acc *[]Account) error {
 
 	// Check for errors from iterating over rows.
 	if err := rows.Err(); err != nil {
-		fmt.Println("Error iterating accounts rows:", err.Error())
+		logger.Log.Errorf("Error iterating accounts rows:", err.Error())
 		return err
 	}
 
