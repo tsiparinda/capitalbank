@@ -15,7 +15,7 @@ func LoadCheckBalance(datefrom time.Time, acc *[]Account) error {
 	for i, account := range *acc {
 		//	fmt.Printf("LoadCheckBalance acc: %v, %v, %v, %v\n", datefrom, account.BankRegistr, sql.Named("p1", datefrom.Format("02.01.2006")), sql.Named("p2", account.BankRegistr))
 		// Select data from database
-		rows, err := db.DB.Query("SELECT DateBal,  cast(BankRegistr as varchar(50)), fBad FROM bank_checkbalance where DateBal > @p1 and BankRegistr = @p2",
+		rows, err := db.DB.Query("SELECT DateBal,  cast(BankRegistr as varchar(50)), fBad FROM bank_checkbalance where DateBal >= @p1 and BankRegistr = @p2",
 			sql.Named("p1", datefrom.Format("02.01.2006")),
 			sql.Named("p2", account.BankRegistr))
 		if err != nil {

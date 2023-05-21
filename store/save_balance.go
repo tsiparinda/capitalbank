@@ -35,7 +35,7 @@ func SaveBalance(data []DataBalance) {
 
 	for i, _ := range data {
 
-		_, err := db.DB.Exec("EXEC dbo.InsertIntoBankBalances @BankRegistr=@p1, @Dpd=@p2, @Source=@p3, @Acc=@p4, @Currency=@p5, @BalanceIn=@p6, @BalanceInEq=@p7, @BalanceOut=@p8, @BalanceOutEq=@p9, @TurnoverDebt=@p10, @TurnoverDebtEq=@p11, @TurnoverCred=@p12, @TurnoverCredEq=@p13, @IsFinalBal=@p14",
+		_, err := db.DB.Exec("EXEC dbo.bank_FillBankBalance @BankRegistr=@p1, @DateBal=@p2, @Source=@p3, @Acc=@p4, @Currency=@p5, @BalanceIn=@p6, @BalanceInEq=@p7, @BalanceOut=@p8, @BalanceOutEq=@p9, @TurnoverDebt=@p10, @TurnoverDebtEq=@p11, @TurnoverCred=@p12, @TurnoverCredEq=@p13, @IsFinalBal=@p14",
 			data[i].BankRegistr,
 			data[i].Dpd,
 			data[i].Source,

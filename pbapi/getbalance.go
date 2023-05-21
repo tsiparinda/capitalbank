@@ -54,7 +54,7 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 
 		logger.Log.WithFields(logrus.Fields{
 			"url": url,
-		}).Debugf("Request URL to take transactions:", url)
+		}).Debugf("Request URL to take balance:", url)
 
 		req.Header.Add("User-Agent", a.UserAgent)
 		req.Header.Add("token", a.Token)

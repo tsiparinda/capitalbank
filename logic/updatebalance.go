@@ -38,6 +38,8 @@ func StartUpdateBalance() error {
 
 	dateTo, _ := utils.GetShortDate(time.Now())
 	dateFrom := dateTo.AddDate(0, 0, -reqdays)
+	//fmt.Printf("dateFrom : ", dateTo, dateFrom, reqdays)
+	//return nil
 	// fill the account struct by information about balance's state by date
 	err = store.LoadCheckBalance(dateFrom, &acc)
 	if err != nil {
@@ -72,14 +74,14 @@ func StartUpdateBalance() error {
 
 				//save balance
 				store.SaveBalance(bal)
-				
+
 				// trace info to logs
 				// result, err := utils.StructToMap(bal)
 				// if err != nil {
 				// 	fmt.Printf(err.Error())
 				// }
 				// logger.Log.WithFields(result).Tracef("GetBalance: ")
-				
+
 				// if err == nil {
 				// 	store.SaveTransactions(tran)
 				// }
