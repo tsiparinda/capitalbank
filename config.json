@@ -4,6 +4,6 @@
     "TIPS_logLevel": "Trace Debug info Warn Error Fatal Panic",
     "logLevel": "Debug",
     "RequestDaysTrans": 0,
-    "RequestDaysBalance": 20,
+    "RequestDaysBalance": 3,
     "RowsInPack": 100
 }
