@@ -35,8 +35,12 @@ func SaveTransactions(data []DataTransaction) {
 	}
 
 	for i, _ := range data {
-		// Insert data into database
-		_, err := db.DB.Exec("exec bank_AddTransaction @Direction, @BankRegistr, @CntrCode, @CntrName, @CntrAcc, @DateTran, @Comment, @SumTran, @ID, @TranType",
+		// Insert data into databas
+		// logger.Log.WithFields(logrus.Fields{
+		// 	"ID": data[i].TranType,
+		// 	"Comment": data[i].Comment,
+		// }).Debugf("Error inserting data into database:")
+		_, err := db.DB.Exec("exec bank_AddTransaction @Direction, @BankRegistr, @CntrCode, @CntrName, @CntrAcc, @DateTran, @Comment, @SumTran, @ID, @TypeTran",
 			sql.Named("Direction", data[i].Direction),
 			sql.Named("BankRegistr", data[i].BankRegistr),
 			sql.Named("CntrCode", data[i].CntrCode),
@@ -46,7 +50,7 @@ func SaveTransactions(data []DataTransaction) {
 			sql.Named("Comment", data[i].Comment),
 			sql.Named("SumTran", data[i].SumTran),
 			sql.Named("ID", data[i].ID),
-			sql.Named("TranType", data[i].TranType))
+			sql.Named("TypeTran", data[i].TranType))
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
 				"ID": data[i].ID,
