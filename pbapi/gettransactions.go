@@ -3,7 +3,7 @@ package pbapi
 import (
 	"capitalbank/config"
 	"capitalbank/logger"
-	pb_models "capitalbank/pbapi/models"
+	models "capitalbank/pbapi/models"
 	"capitalbank/store"
 	"capitalbank/utils"
 	"encoding/json"
@@ -55,9 +55,9 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 	dateFrom := dateTo.AddDate(0, 0, -reqdays)
 	//main cycle for receive all of packages
 	for {
-		responseData := pb_models.TransactionResponseData{}
+		responseData := models.TransactionResponseData{}
 		url, _ := a.CombineURL(
-			pb_models.PbURL{
+			models.PbURL{
 				URL:       "https://acp.privatbank.ua/api/statements/transactions",
 				Acc:       a.Account,
 				StartDate: dateFrom,

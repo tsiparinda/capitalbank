@@ -1,6 +1,7 @@
 package main
 
 import (
+	"capitalbank/csv"
 	"capitalbank/db"
 	"capitalbank/logger"
 	"capitalbank/logic"
@@ -21,6 +22,20 @@ func main() {
 	fields["location"] = "Earth"
 	logger.Log.WithFields(fields).Info("Program was started")
 
-	logic.StartExchangeTran()
-	logic.StartUpdateBalance()
+	//records := []csvmodels.CSVRecord{}
+	var records []csv.CSVRecord
+	var allfiles []csv.CSVfiles
+	var delfiles bool = true
+	records, allfiles, err = csv.LoadCSVfiles(records, allfiles)
+	if err != nil {
+		fmt.Println("Error loading csv files: ", err)
+		delfiles = false
+	}
+
+	logic.StartExchangeTran(records)
+	//logic.StartUpdateBalance()
+	if delfiles {
+		csv.DeleteCSVfiles(allfiles)
+	}
+
 }

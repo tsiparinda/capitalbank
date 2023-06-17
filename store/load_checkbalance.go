@@ -10,7 +10,7 @@ import (
 )
 
 // ...
-
+// load from database and fill the Account.DataCheckBalance structure for check the early bad balance by accounts
 func LoadCheckBalance(datefrom time.Time, acc *[]Account) error {
 	for i, account := range *acc {
 		//	fmt.Printf("LoadCheckBalance acc: %v, %v, %v, %v\n", datefrom, account.BankRegistr, sql.Named("p1", datefrom.Format("02.01.2006")), sql.Named("p2", account.BankRegistr))

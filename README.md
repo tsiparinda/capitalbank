@@ -11,4 +11,13 @@ This is a comman-line application for exchange information between ERP Capital a
 Run commang `go build`and copy to files to correct place for run. If you use Windows, you can create subfolder CapitalBank in "Program files" and put it there. For periodically running this application you can use SQL Agent with job step kind CmdExec and command line: `"c:\Program Files\CapitalBank\" && "capitalbank.exe"`
 
 ## Config
-For correct work you must exactly define connection string to database. Application don't create a database structure, because was created to work with Capital database only.
+For correct work you must exactly define connection string to database. To work with sql instances you should define server name as "name\\instancename"
+Application dosn't create a database structure, because was created to work with Capital database only.
+
+## Program structure
+api - interfaces, which should be defined for any new bank
+logger - define logger functionality
+logic - define a business logic program's behaviour
+pbapi - methods defined for Privatbank
+store - methods for store date in database
+utils - some additional general functions

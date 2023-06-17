@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 
+	dec "github.com/shopspring/decimal"
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -49,4 +50,19 @@ func utf8ToWin1251(input string) (string, error) {
 		return "", err
 	}
 	return output, nil
+}
+
+func Str2Dec(str string, prec int32) (summ dec.Decimal, err error) {
+	summ, err = dec.NewFromString(func() string {
+		if str == "" {
+			return "0"
+		}
+		return str
+	}())
+	if err != nil {
+		// fmt.Println("Failed to convert string to decimal:", err.Error())
+		return dec.Zero, err
+	}
+	summ = summ.Round(prec)
+	return
 }
