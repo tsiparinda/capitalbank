@@ -1,6 +1,7 @@
 package csv
 
 import (
+	"capitalbank/config"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -12,8 +13,8 @@ import (
 )
 
 func LoadCSVfiles(records []CSVRecord, allfiles []CSVfiles) ([]CSVRecord, []CSVfiles, error) {
-
-	dir := "C:\\data" // specify your folder path here
+	dir := config.Config["csvimportdir"].(string)
+	//dir := "\\\\pay\\c$\\IMPORT" // specify your folder path here
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		panic(err)

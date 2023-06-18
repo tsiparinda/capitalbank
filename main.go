@@ -22,7 +22,6 @@ func main() {
 	fields["location"] = "Earth"
 	logger.Log.WithFields(fields).Info("Program was started")
 
-	//records := []csvmodels.CSVRecord{}
 	var records []csv.CSVRecord
 	var allfiles []csv.CSVfiles
 	var delfiles bool = true
@@ -33,7 +32,7 @@ func main() {
 	}
 
 	logic.StartExchangeTran(records)
-	//logic.StartUpdateBalance()
+	logic.StartUpdateBalance()
 	if delfiles {
 		csv.DeleteCSVfiles(allfiles)
 	}

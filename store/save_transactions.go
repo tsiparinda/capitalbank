@@ -33,7 +33,7 @@ func SaveTransactions(data []DataTransaction) {
 			}).Debugf("Error inserting data into database:", err.Error())
 		}
 	}
-return
+	//return
 	for i, _ := range data {
 		// Insert data into databas
 		// logger.Log.WithFields(logrus.Fields{

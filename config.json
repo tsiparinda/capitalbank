@@ -5,5 +5,6 @@
     "logLevel": "Debug",
     "RequestDaysTrans": 0,
     "RequestDaysBalance": 10,
-    "RowsInPack": 100
+    "RowsInPack": 100,
+    "csvimportdir": "\\\\pay\\c$\\IMPORT\\DISTR"
 }
