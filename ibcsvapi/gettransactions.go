@@ -25,7 +25,8 @@ func (a IBankCSVAPI) GetTransactions() ([]store.DataTransaction, error) {
 				summ = records[i].SUM_DT.Mul(dec.NewFromInt(100))
 				trantype = "D"
 			}
-			id := records[i].AUT_MY_ACC + "@" + records[i].DATE_TIME_DAT_OD_TIM_P
+			// create unique identifier of transaction
+			id := records[i].AUT_MY_ACC + "#" + records[i].NUM_DOC + "#" + records[i].AUT_CNTR_CRF
 			datatrans = append(datatrans,
 				store.DataTransaction{
 					Direction:   a.Direction,
