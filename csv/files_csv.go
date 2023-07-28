@@ -17,7 +17,7 @@ func LoadCSVfiles(records []CSVRecord, allfiles []CSVfiles) ([]CSVRecord, []CSVf
 	//dir := "\\\\pay\\c$\\IMPORT" // specify your folder path here
 	files, err := os.ReadDir(dir)
 	if err != nil {
-		panic(err)
+		return records, allfiles, nil
 	}
 
 	for _, f := range files {
