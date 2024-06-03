@@ -1,22 +1,19 @@
 package pbapi
 
 import (
-	"capitalbank/config"
 	"capitalbank/logger"
-	models "capitalbank/pbapi/models"
 	"capitalbank/store"
 	"capitalbank/utils"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
 func (a PrivatBankAPI) SendPayment() (store.PaymentResponce, error) {
-	// Implement the method for getting the transactions from the PrivatBank API
-	// This should return a slice of PrivatBankTransaction values, but as []Transaction
+	// Implement the method for send payment across the PrivatBank API
+	// This should return a responce from api
 	// ...
 	state, err := a.checkState()
 	if !state {
@@ -25,48 +22,51 @@ func (a PrivatBankAPI) SendPayment() (store.PaymentResponce, error) {
 
 	// init vars
 	datatrans := store.PaymentResponce{}
-	var followId string
+	//var followId string
 
-	limit := 10
-	// take requestdays from config file and convert to int
-	if value, ok := config.Config["RowsInPack"].(float64); ok {
-		// The value is a float64, handle it accordingly
-		limit = int(value)
-	} else {
-		logger.Log.WithFields(logrus.Fields{
-			"rowsinpack": value,
-		}).Infof("Error loading reqdays from config:", err.Error())
-	}
+	// limit := 10
+	// // take requestdays from config file and convert to int
+	// if value, ok := config.Config["RowsInPack"].(float64); ok {
+	// 	// The value is a float64, handle it accordingly
+	// 	limit = int(value)
+	// } else {
+	// 	logger.Log.WithFields(logrus.Fields{
+	// 		"rowsinpack": value,
+	// 	}).Infof("Error loading reqdays from config:", err.Error())
+	// }
 
-	var reqdays int
-	// take requestdays from config file and convert to int
-	if value, ok := config.Config["RequestDaysTrans"].(float64); ok {
-		// The value is a float64, handle it accordingly
-		reqdays = int(value)
-	} else {
-		logger.Log.WithFields(logrus.Fields{
-			"reqdays": value,
-		}).Infof("Error loading reqdays from config:", err.Error())
-		reqdays = 1
-	}
-	dateTo := time.Now()
-	dateFrom := dateTo.AddDate(0, 0, -reqdays)
+	// var reqdays int
+	// // take requestdays from config file and convert to int
+	// if value, ok := config.Config["RequestDaysTrans"].(float64); ok {
+	// 	// The value is a float64, handle it accordingly
+	// 	reqdays = int(value)
+	// } else {
+	// 	logger.Log.WithFields(logrus.Fields{
+	// 		"reqdays": value,
+	// 	}).Infof("Error loading reqdays from config:", err.Error())
+	// 	reqdays = 1
+	// }
+	// dateTo := time.Now()
+	// dateFrom := dateTo.AddDate(0, 0, -reqdays)
 	//main cycle for receive all of packages
 	for {
-		responseData := models.TransactionResponseData{}
-		url, _ := a.CombineURL(
-			models.PbURL{
-				URL:       "https://acp.privatbank.ua/api/statements/transactions",
-				Acc:       a.Account,
-				StartDate: dateFrom,
-				EndDate:   dateTo,
-				FollowId:  followId,
-				Limit:     limit})
+		responseData := store.PaymentResponce{}
+		// url, _ := a.CombineURL(
+		// 	models.PbURL{
+		// 		URL: "https://acp.privatbank.ua/api/proxy/payment/create",
+		// 		Acc: a.Account,
+		// 		//StartDate: dateFrom,
+		// 		//EndDate:   dateTo,
+		// 		//FollowId:  followId,
+		// 		//Limit:     limit
+		// 	})
+		url := "https://acp.privatbank.ua/api/proxy/payment/create"
+
 		req, _ := http.NewRequest("GET", url, nil)
 
 		logger.Log.WithFields(logrus.Fields{
 			"url": url,
-		}).Debugf("Request URL to take transactions:", url)
+		}).Debugf("Request URL to send payment:", url)
 
 		req.Header.Add("User-Agent", a.UserAgent)
 		req.Header.Add("token", a.Token)

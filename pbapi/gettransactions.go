@@ -17,7 +17,7 @@ import (
 )
 
 func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
-	// Implement the method for getting the transactions from the PrivatBank API
+	// Implement the method for getting transactions from the PrivatBank API
 	// This should return a slice of PrivatBankTransaction values, but as []Transaction
 	// ...
 	state, err := a.checkState()
