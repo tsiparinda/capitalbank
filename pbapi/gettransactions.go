@@ -7,7 +7,7 @@ import (
 	"capitalbank/store"
 	"capitalbank/utils"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -81,7 +81,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 			}).Warnf("The HTTP request failed with error %s\n", err)
 			return []store.DataTransaction{}, err
 		} else {
-			data, _ := ioutil.ReadAll(res.Body)
+			data, _ := io.ReadAll(res.Body) // was ioutil
 			// Unmarshal the data into the struct
 			json.Unmarshal(data, &responseData)
 			if responseData.Status == "ERROR" {

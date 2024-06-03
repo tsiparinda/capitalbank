@@ -1,7 +1,6 @@
 package logic
 
 import (
-	"capitalbank/csv"
 	"capitalbank/pbapi"
 	"fmt"
 
@@ -10,8 +9,8 @@ import (
 	"capitalbank/store"
 )
 
-func StartExchangePayments(csvrecords []csv.CSVRecord) error {
-	fmt.Println("StartExchangePayments", csvrecords)
+func StartExchangePayments() error {
+	fmt.Println("StartExchangePayments Privat")
 	payments := []store.Payment{}
 	// send privat
 	err := store.LoadPaymentsPrivat(&payments)
@@ -25,16 +24,18 @@ func StartExchangePayments(csvrecords []csv.CSVRecord) error {
 				UserAgent:   "Додаток API",
 				Token:       p.Token.String,
 				ContentType: "application/json;charset=utf8",
-				Account:     p.PayerAccount,
+				//Account:     p.PayerAccount,
 			}
-			_, err := privat.SendPayment()
+			rsp, err := privat.SendPayment(p)
 			if err == nil {
+				fmt.Println("StartExchangePayments Privat response: ", rsp)
 				//	store.SaveTransactions(tran)
 			}
 		}
 	}
 
 	// send IBankCSV
+	//fmt.Println("StartExchangePayments IBankCSV")
 	// payments := make([]store.Payment, 0)
 	// err := store.LoadPaymentsIBankCSV(&payments)
 	// if err != nil {

@@ -108,12 +108,12 @@ type Payment struct {
 	Token                          sql.NullString
 }
 
-type PaymentResponce struct {
-	ResponceStatus      string // ERROR
-	ResponceCode        int64  // 201 or 400
+type PaymentResponse struct {
+	ResponseStatus      string `json:"status"`           // ERROR
+	ResponseCode        int64  `json:"code"`             // 201 or 400
 	PaymentRef          string `json:"payment_ref"`      // "референс створеного платежу"
 	PaymentPackRef      string `json:"payment_pack_ref"` // "запакований референс створеного платежу"
-	ResponceMessage     string `json:"message"`          //"invalid document number",
-	ResponceRequestId   string `json:"requestId"`        // "20240223_131617_286f",
-	ResponceServiceCode string `json:"serviceCode"`      // "PMTSRV0112"
+	ResponseMessage     string `json:"message"`          //"invalid document number",
+	ResponseRequestId   string `json:"requestId"`        // "20240223_131617_286f",
+	ResponseServiceCode string `json:"serviceCode"`      // "PMTSRV0112"
 }

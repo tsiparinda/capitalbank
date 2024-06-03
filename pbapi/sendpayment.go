@@ -1,127 +1,100 @@
 package pbapi
 
 import (
-	"capitalbank/logger"
+	"bytes"
 	"capitalbank/store"
-	"capitalbank/utils"
 	"encoding/json"
-	"io/ioutil"
+	"errors"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
-func (a PrivatBankAPI) SendPayment() (store.PaymentResponce, error) {
-	// Implement the method for send payment across the PrivatBank API
-	// This should return a responce from api
-	// ...
-	state, err := a.checkState()
-	if !state {
-		return store.PaymentResponce{}, err
+func (a PrivatBankAPI) SendPayment(payment store.Payment) (store.PaymentResponse, error) {
+	// Implement the method for sending payment across the PrivatBank API
+	// This should return a response from the API
+
+	// Encode payment struct into JSON
+	paymentJSON, err := json.Marshal(payment)
+	if err != nil {
+		return store.PaymentResponse{}, err
 	}
 
-	// init vars
-	datatrans := store.PaymentResponce{}
-	//var followId string
-
-	// limit := 10
-	// // take requestdays from config file and convert to int
-	// if value, ok := config.Config["RowsInPack"].(float64); ok {
-	// 	// The value is a float64, handle it accordingly
-	// 	limit = int(value)
-	// } else {
-	// 	logger.Log.WithFields(logrus.Fields{
-	// 		"rowsinpack": value,
-	// 	}).Infof("Error loading reqdays from config:", err.Error())
-	// }
-
-	// var reqdays int
-	// // take requestdays from config file and convert to int
-	// if value, ok := config.Config["RequestDaysTrans"].(float64); ok {
-	// 	// The value is a float64, handle it accordingly
-	// 	reqdays = int(value)
-	// } else {
-	// 	logger.Log.WithFields(logrus.Fields{
-	// 		"reqdays": value,
-	// 	}).Infof("Error loading reqdays from config:", err.Error())
-	// 	reqdays = 1
-	// }
-	// dateTo := time.Now()
-	// dateFrom := dateTo.AddDate(0, 0, -reqdays)
-	//main cycle for receive all of packages
-
-	responseData := store.PaymentResponce{}
-	// url, _ := a.CombineURL(
-	// 	models.PbURL{
-	// 		URL: "https://acp.privatbank.ua/api/proxy/payment/create",
-	// 		Acc: a.Account,
-	// 		//StartDate: dateFrom,
-	// 		//EndDate:   dateTo,
-	// 		//FollowId:  followId,
-	// 		//Limit:     limit
-	// 	})
+	// Create HTTP request with payment JSON in the body
 	url := "https://acp.privatbank.ua/api/proxy/payment/create"
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(paymentJSON))
+	if err != nil {
+		return store.PaymentResponse{}, err
+	}
 
-	req, _ := http.NewRequest("GET", url, nil)
+	// Add headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", a.UserAgent)
+	req.Header.Set("token", a.Token)
 
-	logger.Log.WithFields(logrus.Fields{
-		"url": url,
-	}).Debugf("Request URL to send payment:", url)
-
-	req.Header.Add("User-Agent", a.UserAgent)
-	req.Header.Add("token", a.Token)
-	req.Header.Add("Content-Type", a.ContentType)
-
+	// Send HTTP request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		logger.Log.WithFields(logrus.Fields{
-			"err": err,
-		}).Warnf("The HTTP request failed with error %s\n", err)
-		return store.PaymentResponce{}, err
-	} else {
-		data, _ := ioutil.ReadAll(res.Body)
-		// Unmarshal the data into the struct
-		json.Unmarshal(data, &responseData)
-		if responseData.ResponceStatus == "ERROR" {
-			logger.Log.Warnf("PrivatBankAPI.GetBalance: Error status has got from Privatbank")
-			return store.PaymentResponce{}, err
-		}
+		return store.PaymentResponse{}, err
+	}
+	defer res.Body.Close()
 
-		for i, _ := range responseData.Transactions {
-			//save data to logs if debug level
-			result, err := utils.StructToMap(responseData.Transactions[i])
-			if err != nil {
-				logger.Log.WithFields(logrus.Fields{
-					"err": err,
-				}).Warnf("Error when StructToMap balances %s\n", err)
-				return store.PaymentResponce{}, err
-			}
-			result["bank"] = "privat"
-			logger.Log.WithFields(result).Tracef("GET: ", url)
-		}
-
-		for i, _ := range responseData.Transactions {
-			if responseData.Transactions[i].PR_PR == "r" && responseData.Transactions[i].FL_REAL == "r" {
-				// summa in coins!!!
-				// summa, _ := strconv.ParseInt(strings.ReplaceAll(responseData.Transactions[i].SUM_E, ".", ""), 10, 64)
-				// datatrans = append(datatrans,
-				// 	store.Payment{
-				// 		Direction:   a.Direction,
-				// 		BankRegistr: a.BankRegistr,
-				// 		CntrCode:    responseData.Transactions[i].AUT_CNTR_CRF,
-				// 		CntrName:    responseData.Transactions[i].AUT_CNTR_NAM,
-				// 		CntrAcc:     responseData.Transactions[i].AUT_CNTR_ACC,
-				// 		Comment:     responseData.Transactions[i].OSND,
-				// 		DateTran:    responseData.Transactions[i].DAT_OD,
-				// 		ID:          responseData.Transactions[i].ID,
-				// 		TranType:    responseData.Transactions[i].TRANTYPE,
-				// 		SumTran:     summa,
-				// 	})
-			}
-		}
+	// Decode response body into struct
+	var responseData store.PaymentResponse
+	if err := json.NewDecoder(res.Body).Decode(&responseData); err != nil {
+		return store.PaymentResponse{}, err
 	}
 
-	//trancount := len(datatrans)
-	//logger.Log.WithFields(logrus.Fields{}).Debugf("It was received %v transactions", trancount)
-	return datatrans, nil
+	if responseData.ResponseStatus == "ERROR" {
+		return store.PaymentResponse{}, errors.New("error status received from PrivatBank API")
+	}
+
+	return responseData, nil
 }
+
+// func (a PrivatBankAPI) SendPaymentold(payment store.Payment) (store.PaymentResponse, error) {
+// 	// Implement the method for send payment across the PrivatBank API
+// 	// This should return a responce from api
+// 	// ...
+// 	state, err := a.checkState()
+// 	if !state {
+// 		return store.PaymentResponse{}, err
+// 	}
+
+// 	// Encode payment struct into JSON
+// 	paymentJSON, err := json.Marshal(payment)
+// 	if err != nil {
+// 		return store.PaymentResponse{}, err
+// 	}
+
+// 	// init vars
+// 	datatrans := store.PaymentResponse{}
+// 	responseData := store.PaymentResponse{}
+
+// 	url := "https://acp.privatbank.ua/api/proxy/payment/create"
+
+// 	req, _ := http.NewRequest("GET", url, nil)
+
+// 	logger.Log.WithFields(logrus.Fields{
+// 		"url": url,
+// 	}).Debugf("Request URL to send payment:", url)
+
+// 	req.Header.Add("User-Agent", a.UserAgent)
+// 	req.Header.Add("token", a.Token)
+// 	req.Header.Add("Content-Type", a.ContentType)
+
+// 	res, err := http.DefaultClient.Do(req)
+// 	if err != nil {
+// 		logger.Log.WithFields(logrus.Fields{
+// 			"err": err,
+// 		}).Warnf("The HTTP request failed with error %s\n", err)
+// 		return store.PaymentResponse{}, err
+// 	} else {
+// 		data, _ := io.ReadAll(res.Body)
+// 		// Unmarshal the data into the struct
+// 		json.Unmarshal(data, &responseData)
+// 		if responseData.ResponseStatus == "ERROR" {
+// 			logger.Log.Warnf("PrivatBankAPI.SendPayment: Error status has got from Privatbank")
+// 			return store.PaymentResponse{}, err
+// 		}
+// 	}
+// 	return datatrans, nil
+// }

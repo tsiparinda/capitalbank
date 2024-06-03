@@ -14,5 +14,5 @@ type BankAPI interface {
 	GetState() (store.DataState, error)
 	GetBalance(time.Time) ([]store.DataBalance, error)
 	GetTransactions() ([]store.DataTransaction, error)
-	SendPayment() (store.PaymentResponce, error)
+	SendPayment(store.Payment) (store.PaymentResponse, error)
 }

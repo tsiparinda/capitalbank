@@ -4,8 +4,8 @@ import (
 	"capitalbank/store"
 )
 
-func (a IBankCSVAPI) SendPayment() (store.PaymentResponce, error) {
-	datatrans := store.PaymentResponce{}
+func (a IBankCSVAPI) SendPayment(payment store.Payment) (store.PaymentResponse, error) {
+	datatrans := store.PaymentResponse{}
 	records := a.Records
 	//fmt.Println("from ibcsvapi: ", records)
 	for i, _ := range records {
