@@ -1,7 +1,6 @@
 package logic
 
 import (
-	"capitalbank/api"
 	"capitalbank/config"
 	"capitalbank/logger"
 	"capitalbank/utils"
@@ -58,9 +57,9 @@ func StartUpdateBalance() error {
 
 		switch a.Bank {
 		case "privat":
-			if a.Token.Valid == true {
-				var privat api.BankAPI
-				privat = pbapi.PrivatBankAPI{
+			if a.Token.Valid {
+				// var privat api.BankAPI
+				privat := pbapi.PrivatBankAPI{
 					UserAgent:   "Додаток API",
 					Token:       a.Token.String,
 					ContentType: "application/json;charset=utf8",

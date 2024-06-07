@@ -32,7 +32,7 @@ func main() {
 	}
 
 	logic.StartExchangeTran(records)
-	logic.StartExchangePayments()
+	//logic.StartExchangePayments()
 	logic.StartUpdateBalance()
 	if delfiles {
 		csv.DeleteCSVfiles(allfiles)

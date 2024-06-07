@@ -1,10 +1,13 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 
 	dec "github.com/shopspring/decimal"
 	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/transform"
 )
 
 func StructToMap(item interface{}) (map[string]interface{}, error) {
@@ -43,7 +46,7 @@ func StructToMapNew(item interface{}) (interface{}, error) {
 	}
 }
 
-func utf8ToWin1251(input string) (string, error) {
+func Utf8ToWin1251(input string) (string, error) {
 	decoder := charmap.Windows1251.NewDecoder()
 	output, err := decoder.String(input)
 	if err != nil {
@@ -65,4 +68,11 @@ func Str2Dec(str string, prec int32) (summ dec.Decimal, err error) {
 	}
 	summ = summ.Round(prec)
 	return
+}
+
+func ConvertToCP1251(data []byte) ([]byte, error) {
+	reader := bytes.NewReader(data)
+	transformer := charmap.Windows1251.NewEncoder()
+	transformedReader := transform.NewReader(reader, transformer)
+	return ioutil.ReadAll(transformedReader)
 }

@@ -17,6 +17,7 @@ func StartExchangePayments() error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("StartExchangePayments Privat payments: ", payments)
 	for _, p := range payments {
 		if p.Token.Valid {
 			//var privat api.BankAPI
@@ -24,12 +25,13 @@ func StartExchangePayments() error {
 				UserAgent:   "Додаток API",
 				Token:       p.Token.String,
 				ContentType: "application/json;charset=utf8",
-				//Account:     p.PayerAccount,
 			}
 			rsp, err := privat.SendPayment(p)
 			if err == nil {
 				fmt.Println("StartExchangePayments Privat response: ", rsp)
 				//	store.SaveTransactions(tran)
+			} else {
+				fmt.Println("StartExchangePayments Privat error: ", err)
 			}
 		}
 	}
