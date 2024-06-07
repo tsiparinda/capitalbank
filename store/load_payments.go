@@ -12,7 +12,7 @@ func LoadPaymentsPrivat(payments *[]Payment) error {
 	// Select data from database
 	rows, err := db.DB.Query("SELECT document_number, payment_date, payment_destination, payer_account, recipient_account, recipient_nceo, payment_naming, recipient_ifi, recipient_ifi_text, Amount, Token  FROM bank_payments2send_privat")
 	if err != nil {
-		logger.Log.Errorf("Error loading payments from database:", err.Error())
+		logger.Log.Error("Error loading payments from database:", err.Error())
 		return err
 	}
 	defer rows.Close()
@@ -22,7 +22,7 @@ func LoadPaymentsPrivat(payments *[]Payment) error {
 		// Scan each column into the corresponding field of an Account. Adjust this line as needed based on your table structure.
 		err = rows.Scan(&p.DocumentNumber, &p.PaymentDate, &p.PaymentDestination, &p.PayerAccount, &p.RecipientAccount, &p.RecipientNceo, &p.PaymentNaming, &p.RecipientIfi, &p.RecipientIfiText, &p.PaymentAmount, &p.Token)
 		if err != nil {
-			logger.Log.Errorf("Error scanning accounts rows:", err.Error())
+			logger.Log.Error("Error scanning accounts rows:", err.Error())
 			return err
 		}
 		*payments = append(*payments, p)
@@ -30,7 +30,7 @@ func LoadPaymentsPrivat(payments *[]Payment) error {
 
 	// Check for errors from iterating over rows.
 	if err := rows.Err(); err != nil {
-		logger.Log.Errorf("Error iterating accounts rows:", err.Error())
+		logger.Log.Error("Error iterating accounts rows:", err.Error())
 		return err
 	}
 

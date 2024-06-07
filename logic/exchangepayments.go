@@ -3,7 +3,6 @@ package logic
 import (
 	"capitalbank/logger"
 	"capitalbank/pbapi"
-	"fmt"
 
 	// "capitalbank/logger"
 
@@ -13,8 +12,9 @@ import (
 )
 
 func StartExchangePayments() {
-	fmt.Println("StartExchangePayments Privat")
+	logger.Log.Info("StartExchangePayments started")
 	payments := []store.Payment{}
+	
 	// send privat
 	err := store.LoadPaymentsPrivat(&payments)
 	if err != nil {
@@ -23,11 +23,10 @@ func StartExchangePayments() {
 	}
 	logger.Log.WithFields(logrus.Fields{
 		"payments": payments,
-	}).Trace("StartExchangePayments: LoadPaymentsPrivat")
+	}).Trace("StartExchangePayments: Payment loaded by LoadPaymentsPrivat")
 
 	for _, p := range payments {
 		if p.Token.Valid {
-			//var privat api.BankAPI
 			privat := pbapi.PrivatBankAPI{
 				UserAgent:   "Додаток API",
 				Token:       p.Token.String,
@@ -38,14 +37,13 @@ func StartExchangePayments() {
 				logger.Log.WithFields(logrus.Fields{
 					"payment":  p,
 					"response": rsp,
-				}).Trace("StartExchangePayments: SendPayment")
-				//	store.SaveTransactions(tran)
+				}).Trace("StartExchangePayments: Payment sent successfully!!!")
 			} else {
 				logger.Log.WithFields(logrus.Fields{
 					"payment": p,
-				}).Error("StartExchangePayments: Error inserting data into database:", err.Error())
-				return
+				}).Error("StartExchangePayments: Error SendPayment:", err.Error())
 			}
+				store.UpdatePayment(p, rsp)
 		}
 	}
 
