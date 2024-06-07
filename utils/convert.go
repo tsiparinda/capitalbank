@@ -76,3 +76,12 @@ func ConvertToCP1251(data []byte) ([]byte, error) {
 	transformedReader := transform.NewReader(reader, transformer)
 	return ioutil.ReadAll(transformedReader)
 }
+
+func EncodeWindows1251(ba []uint8) ([]uint8, error) {
+	enc := charmap.Windows1251.NewEncoder()
+	out, err := enc.String(string(ba))
+	if err != nil {
+		return []uint8(""), err
+	}
+	return []uint8(out), nil
+}

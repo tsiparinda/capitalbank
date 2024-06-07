@@ -45,6 +45,7 @@ type DataTransaction struct {
 	SumTran     int64  // SUMMA in national currency
 	ID          string // unique number
 	TranType    string // D, C
+	NumDoc      string // numdoc for define our payments
 }
 
 type DataBalance struct {

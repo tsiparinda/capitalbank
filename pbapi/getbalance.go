@@ -7,7 +7,7 @@ import (
 	"capitalbank/store"
 	"capitalbank/utils"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -54,7 +54,7 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 
 		logger.Log.WithFields(logrus.Fields{
 			"url": url,
-		}).Debugf("Request URL to take balance:", url)
+		}).Debug("Request URL to take balance:", url)
 
 		req.Header.Add("User-Agent", a.UserAgent)
 		req.Header.Add("token", a.Token)
@@ -67,7 +67,7 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 			}).Warnf("The HTTP request failed with error %s\n", err)
 			return []store.DataBalance{}, err
 		} else {
-			data, _ := ioutil.ReadAll(res.Body)
+			data, _ := io.ReadAll(res.Body)
 			// Unmarshal the data into the struct
 			json.Unmarshal(data, &responseData)
 			if responseData.Status == "ERROR" {
@@ -85,7 +85,7 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 					return []store.DataBalance{}, err
 				}
 				result["bank"] = "privat"
-				logger.Log.WithFields(result).Tracef("GET: ", url)
+				logger.Log.WithFields(result).Trace("GET: ", url)
 			}
 
 			for i, _ := range responseData.Balances {

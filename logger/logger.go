@@ -3,13 +3,13 @@ package logger
 import (
 	"capitalbank/config"
 	"capitalbank/db"
+	"capitalbank/utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/text/encoding/charmap"
 )
 
 // HOW TO USE
@@ -40,6 +40,19 @@ import (
 // 	result["bank"] = "privat"
 // 	logger.Log.WithFields(result).Tracef("GET: ", url)
 // }
+// Logrus has seven logging levels: Trace, Debug, Info, Warning, Error, Fatal and Panic.
+// log.Trace("Something very low level.")
+// log.Debug("Useful debugging information.")
+// log.Info("Something noteworthy happened!")
+// log.Warn("You should probably take a look at this.")
+// log.Error("Something failed but I'm not quitting.")
+// // Calls os.Exit(1) after logging
+// log.Fatal("Bye.")
+// // Calls panic() after logging
+// log.Panic("I'm bailing.")
+//You can set the logging level on a Logger, then it will only log entries with that severity or anything above it:
+// Will log anything that is info or above (warn, error, fatal, panic). Default.
+//log.SetLevel(log.InfoLevel)
 
 type MSSQLHook struct{}
 
@@ -55,12 +68,12 @@ func (h *MSSQLHook) Fire(entry *logrus.Entry) error {
 		return err
 	}
 
-	message, _ := EncodeWindows1251([]uint8(entry.Message))
+	message, _ := utils.EncodeWindows1251([]uint8(entry.Message))
 	if err != nil {
 		fmt.Println("Logger.Fire: Error EncodeWindows1251 Message")
 		return err
 	}
-	params, err = EncodeWindows1251(params)
+	params, err = utils.EncodeWindows1251(params)
 	if err != nil {
 		fmt.Println("Logger.Fire: Error EncodeWindows1251 Params")
 		return err
@@ -127,20 +140,20 @@ func SetLogLevel(level string) {
 	}
 }
 
-func utf8ToWin1251(input string) (string, error) {
-	decoder := charmap.Windows1251.NewEncoder()
-	output, err := decoder.String(input)
-	if err != nil {
-		return "", err
-	}
-	return output, nil
-}
+// func utf8ToWin1251(input string) (string, error) {
+// 	decoder := charmap.Windows1251.NewEncoder()
+// 	output, err := decoder.String(input)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	return output, nil
+// }
 
-func EncodeWindows1251(ba []uint8) ([]uint8, error) {
-	enc := charmap.Windows1251.NewEncoder()
-	out, err := enc.String(string(ba))
-	if err != nil {
-		return []uint8(""), err
-	}
-	return []uint8(out), nil
-}
+// func EncodeWindows1251(ba []uint8) ([]uint8, error) {
+// 	enc := charmap.Windows1251.NewEncoder()
+// 	out, err := enc.String(string(ba))
+// 	if err != nil {
+// 		return []uint8(""), err
+// 	}
+// 	return []uint8(out), nil
+// }

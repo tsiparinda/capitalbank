@@ -37,7 +37,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 	} else {
 		logger.Log.WithFields(logrus.Fields{
 			"rowsinpack": value,
-		}).Infof("Error loading reqdays from config:", err.Error())
+		}).Info("Error loading reqdays from config:", err.Error())
 	}
 
 	var reqdays int
@@ -48,7 +48,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 	} else {
 		logger.Log.WithFields(logrus.Fields{
 			"reqdays": value,
-		}).Infof("Error loading reqdays from config:", err.Error())
+		}).Info("Error loading reqdays from config:", err.Error())
 		reqdays = 1
 	}
 	dateTo := time.Now()
@@ -68,7 +68,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 
 		logger.Log.WithFields(logrus.Fields{
 			"url": url,
-		}).Debugf("Request URL to take transactions:", url)
+		}).Debug("Request URL to take transactions:", url)
 
 		req.Header.Add("User-Agent", a.UserAgent)
 		req.Header.Add("token", a.Token)
@@ -89,6 +89,10 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 				return []store.DataTransaction{}, err
 			}
 
+			logger.Log.WithFields(logrus.Fields{
+				"responseData": responseData,
+			}).Trace("Requested transactions by account:", a.Account)
+
 			for i, _ := range responseData.Transactions {
 				//save data to logs if debug level
 				result, err := utils.StructToMap(responseData.Transactions[i])
@@ -99,7 +103,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 					return []store.DataTransaction{}, err
 				}
 				result["bank"] = "privat"
-				logger.Log.WithFields(result).Tracef("GET: ", url)
+				logger.Log.WithFields(result).Trace("GET: ", url)
 			}
 
 			for i, _ := range responseData.Transactions {
@@ -118,6 +122,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							ID:          responseData.Transactions[i].ID,
 							TranType:    responseData.Transactions[i].TRANTYPE,
 							SumTran:     summa,
+							NumDoc:      responseData.Transactions[i].NUM_DOC,
 						})
 				}
 			}

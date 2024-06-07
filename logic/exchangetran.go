@@ -4,20 +4,24 @@ import (
 	"capitalbank/api"
 	"capitalbank/csv"
 	"capitalbank/ibcsvapi"
+	"capitalbank/logger"
 	"capitalbank/pbapi"
 	"fmt"
 
 	// "capitalbank/logger"
 
 	"capitalbank/store"
+
+	"github.com/sirupsen/logrus"
 )
 
-func StartExchangeTran(csvrecords []csv.CSVRecord) error {
+func StartExchangeTran(csvrecords []csv.CSVRecord) {
 	fmt.Println("StartExchangeTran", csvrecords)
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
-		return err
+		logger.Log.Error("StartExchangeTran: Error from LoadAccounts:", err.Error())
+		return
 	}
 	//get and save transactions
 	for _, a := range acc {
@@ -52,10 +56,12 @@ func StartExchangeTran(csvrecords []csv.CSVRecord) error {
 			if err == nil {
 				store.SaveTransactions(tran)
 			} else {
-				fmt.Println("StartExchangeTran: Error from GetTransactions iBank2UAcsv: ", err)
+				logger.Log.WithFields(logrus.Fields{
+					"Account": a.Account,
+				}).Error("StartExchangeTran: Error from GetTransactions iBank2UAcsv:", err.Error())
+				return
 			}
 
 		}
 	}
-	return nil
 }

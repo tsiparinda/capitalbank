@@ -4,7 +4,6 @@ import (
 	"capitalbank/config"
 	"capitalbank/logger"
 	"capitalbank/utils"
-	"fmt"
 	"time"
 
 	// "capitalbank/logger"
@@ -14,12 +13,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func StartUpdateBalance() error {
+func StartUpdateBalance() {
 	// get accounts
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
-		return err
+		logger.Log.Error("StartUpdateBalance: Error from LoadAccounts:", err.Error())
+		return
 	}
 
 	var reqdays int
@@ -28,37 +28,35 @@ func StartUpdateBalance() error {
 		// The value is a float64, handle it accordingly
 		reqdays = int(value)
 	} else {
-		logger.Log.WithFields(logrus.Fields{
-			"reqdays": value,
-		}).Infof("Error loading reqdays from config:", err.Error())
+		logger.Log.Error("StartUpdateBalance: Error loading reqdays from config:", err.Error())
 		reqdays = 1
 	}
-	//	reqdays = 30
 
 	dateTo, _ := utils.GetShortDate(time.Now())
 	dateFrom := dateTo.AddDate(0, 0, -reqdays)
-	//fmt.Printf("dateFrom : ", dateTo, dateFrom, reqdays)
-	//return nil
 	// fill the account struct by information about balance's state by date
 	err = store.LoadCheckBalance(dateFrom, &acc)
 	if err != nil {
-		return err
+		logger.Log.WithFields(logrus.Fields{
+			"dateFrom": dateFrom,
+			"acc":      acc,
+		}).Error("StartUpdateBalance: Error from LoadCheckBalance:", err.Error())
+		return
 	}
-	//fmt.Printf("acc: \n", acc)
 	// cycle by accounts
 	for _, a := range acc {
 		// calc first maximum early date with bad saldo and set it as datefrom
 		earliestBADdate, err := EarliestFBADTrue(&a.BalanceState)
-		//fmt.Printf("earliestBADdate, a: %v, %v \n", earliestBADdate, a)
 		if err != nil {
-			fmt.Printf("Error: %v\n", err)
-			return err
+			logger.Log.WithFields(logrus.Fields{
+				"acc": a,
+			}).Error("StartUpdateBalance: Error from EarliestFBADTrue:", err.Error())
+			return
 		}
 
 		switch a.Bank {
 		case "privat":
 			if a.Token.Valid {
-				// var privat api.BankAPI
 				privat := pbapi.PrivatBankAPI{
 					UserAgent:   "Додаток API",
 					Token:       a.Token.String,
@@ -69,7 +67,6 @@ func StartUpdateBalance() error {
 				}
 				// get balance by dates from bank's server
 				bal, _ := privat.GetBalance(earliestBADdate)
-				// fmt.Printf("bal %v \n", bal)
 
 				//save balance
 				store.SaveBalance(bal)
@@ -87,5 +84,4 @@ func StartUpdateBalance() error {
 			}
 		}
 	}
-	return nil
 }

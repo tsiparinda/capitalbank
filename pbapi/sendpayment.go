@@ -39,8 +39,6 @@ func (a PrivatBankAPI) SendPayment(payment store.Payment) (store.PaymentResponse
 	req.Header.Set("User-Agent", a.UserAgent)
 	req.Header.Set("token", a.Token)
 
-	//	return store.PaymentResponse{}, nil
-
 	// Send HTTP request
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -49,16 +47,10 @@ func (a PrivatBankAPI) SendPayment(payment store.Payment) (store.PaymentResponse
 	defer res.Body.Close()
 
 	var responseData store.PaymentResponse
-	///////////
 	data, _ := io.ReadAll(res.Body) // was ioutil
 	// Unmarshal the data into the struct
 	json.Unmarshal(data, &responseData)
-	///////
-	// Decode response body into struct
 
-	// if err := json.NewDecoder(res.Body).Decode(&responseData); err != nil {
-	// 	return store.PaymentResponse{}, err
-	// }
 	fmt.Println("PrivatBankAPI.SendPayment responseData:  ", responseData)
 	if responseData.ResponseStatus == "ERROR" {
 		return store.PaymentResponse{}, errors.New("error status received from PrivatBank API")

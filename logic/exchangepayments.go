@@ -1,23 +1,30 @@
 package logic
 
 import (
+	"capitalbank/logger"
 	"capitalbank/pbapi"
 	"fmt"
 
 	// "capitalbank/logger"
 
 	"capitalbank/store"
+
+	"github.com/sirupsen/logrus"
 )
 
-func StartExchangePayments() error {
+func StartExchangePayments() {
 	fmt.Println("StartExchangePayments Privat")
 	payments := []store.Payment{}
 	// send privat
 	err := store.LoadPaymentsPrivat(&payments)
 	if err != nil {
-		return err
+		logger.Log.Error("StartExchangePayments: Error from LoadPaymentsPrivat:", err.Error())
+		return
 	}
-	fmt.Println("StartExchangePayments Privat payments: ", payments)
+	logger.Log.WithFields(logrus.Fields{
+		"payments": payments,
+	}).Trace("StartExchangePayments: LoadPaymentsPrivat")
+
 	for _, p := range payments {
 		if p.Token.Valid {
 			//var privat api.BankAPI
@@ -28,10 +35,16 @@ func StartExchangePayments() error {
 			}
 			rsp, err := privat.SendPayment(p)
 			if err == nil {
-				fmt.Println("StartExchangePayments Privat response: ", rsp)
+				logger.Log.WithFields(logrus.Fields{
+					"payment":  p,
+					"response": rsp,
+				}).Trace("StartExchangePayments: SendPayment")
 				//	store.SaveTransactions(tran)
 			} else {
-				fmt.Println("StartExchangePayments Privat error: ", err)
+				logger.Log.WithFields(logrus.Fields{
+					"payment": p,
+				}).Error("StartExchangePayments: Error inserting data into database:", err.Error())
+				return
 			}
 		}
 	}
@@ -56,6 +69,4 @@ func StartExchangePayments() error {
 	// } else {
 	// 	fmt.Println("StartExchangeTran: Error from GetTransactions iBank2UAcsv: ", err)
 	// }
-
-	return nil
 }
