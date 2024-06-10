@@ -20,7 +20,7 @@ func StartExchangeTran(csvrecords []csv.CSVRecord) {
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
-		logger.Log.Error("StartExchangeTran: Error from LoadAccounts:", err.Error())
+		logger.Log.Info("StartExchangeTran: Error from LoadAccounts:", err.Error())
 		return
 	}
 	//get and save transactions
@@ -29,7 +29,6 @@ func StartExchangeTran(csvrecords []csv.CSVRecord) {
 		case "privat":
 
 			if a.Token.Valid {
-				// var privat api.BankAPI
 				privat := pbapi.PrivatBankAPI{
 					UserAgent:   "Додаток API",
 					Token:       a.Token.String,
@@ -58,7 +57,7 @@ func StartExchangeTran(csvrecords []csv.CSVRecord) {
 			} else {
 				logger.Log.WithFields(logrus.Fields{
 					"Account": a.Account,
-				}).Error("StartExchangeTran: Error from GetTransactions iBank2UAcsv:", err.Error())
+				}).Info("StartExchangeTran: Error from GetTransactions iBank2UAcsv:", err.Error())
 				return
 			}
 

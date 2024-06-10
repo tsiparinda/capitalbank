@@ -18,7 +18,7 @@ func StartUpdateBalance() {
 	acc := []store.Account{}
 	err := store.LoadAccounts(&acc)
 	if err != nil {
-		logger.Log.Error("StartUpdateBalance: Error from LoadAccounts:", err.Error())
+		logger.Log.Info("StartUpdateBalance: Error from LoadAccounts:", err.Error())
 		return
 	}
 
@@ -28,7 +28,7 @@ func StartUpdateBalance() {
 		// The value is a float64, handle it accordingly
 		reqdays = int(value)
 	} else {
-		logger.Log.Error("StartUpdateBalance: Error loading reqdays from config:", err.Error())
+		logger.Log.Info("StartUpdateBalance: Error loading reqdays from config:", err.Error())
 		reqdays = 1
 	}
 
@@ -40,7 +40,7 @@ func StartUpdateBalance() {
 		logger.Log.WithFields(logrus.Fields{
 			"dateFrom": dateFrom,
 			"acc":      acc,
-		}).Error("StartUpdateBalance: Error from LoadCheckBalance:", err.Error())
+		}).Info("StartUpdateBalance: Error from LoadCheckBalance:", err.Error())
 		return
 	}
 	// cycle by accounts
@@ -50,7 +50,7 @@ func StartUpdateBalance() {
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
 				"acc": a,
-			}).Error("StartUpdateBalance: Error from EarliestFBADTrue:", err.Error())
+			}).Info("StartUpdateBalance: Error from EarliestFBADTrue:", err.Error())
 			return
 		}
 

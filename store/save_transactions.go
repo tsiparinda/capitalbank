@@ -30,7 +30,7 @@ func SaveTransactions(data []DataTransaction) {
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
 				"data[i]": data[i],
-			}).Error("Error inserting data into database:", err.Error())
+			}).Info("Error inserting data into database:", err.Error())
 		}
 	}
 	//return
@@ -54,7 +54,7 @@ func SaveTransactions(data []DataTransaction) {
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
 				"ID": data[i].ID,
-			}).Error("Error inserting data into database:", err.Error())
+			}).Info("Error inserting data into database:", err.Error())
 		}
 	}
 

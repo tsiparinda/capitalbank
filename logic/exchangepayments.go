@@ -18,7 +18,7 @@ func StartExchangePayments() {
 	// send privat
 	err := store.LoadPaymentsPrivat(&payments)
 	if err != nil {
-		logger.Log.Error("StartExchangePayments: Error from LoadPaymentsPrivat:", err.Error())
+		logger.Log.Info("StartExchangePayments: Error from LoadPaymentsPrivat:", err.Error())
 		return
 	}
 	logger.Log.WithFields(logrus.Fields{
@@ -41,7 +41,7 @@ func StartExchangePayments() {
 			} else {
 				logger.Log.WithFields(logrus.Fields{
 					"payment": p,
-				}).Error("StartExchangePayments: Error SendPayment:", err.Error())
+				}).Info("StartExchangePayments: Error SendPayment:", err.Error())
 			}
 				store.UpdatePayment(p, rsp)
 		}

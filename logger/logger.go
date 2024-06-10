@@ -114,7 +114,7 @@ func init() {
 	level, err := logrus.ParseLevel(loglevel)
 	if err != nil {
 		fmt.Printf("Error parsing level: %v\n", err)
-		loglevel = "Warn"
+		loglevel = "Info"
 		level, _ = logrus.ParseLevel(loglevel)
 	}
 	Log.SetLevel(level)

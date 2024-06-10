@@ -66,7 +66,7 @@ func SaveBalance(data []DataBalance) {
 		if err != nil {
 			logger.Log.WithFields(logrus.Fields{
 				"BankRegistr": data[i].BankRegistr,
-			}).Errorf("Error inserting data into database:", err.Error())
+			}).Info("Error inserting data into database:", err.Error())
 		}
 	}
 

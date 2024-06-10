@@ -19,7 +19,7 @@ func LoadCheckBalance(datefrom time.Time, acc *[]Account) error {
 			sql.Named("p1", datefrom.Format("02.01.2006")),
 			sql.Named("p2", account.BankRegistr))
 		if err != nil {
-			logger.Log.Errorf("Error loading accounts checkbalance from database:", err.Error())
+			logger.Log.Info("Error loading accounts checkbalance from database:", err.Error())
 			return err
 		}
 		defer rows.Close()
@@ -30,7 +30,7 @@ func LoadCheckBalance(datefrom time.Time, acc *[]Account) error {
 			// Scan each column into the corresponding field of an Account. Adjust this line as needed based on your table structure.
 			err = rows.Scan(&a.Dpd, &a.BankRegistr, &a.FBAD)
 			if err != nil {
-				logger.Log.Errorf("Error scanning accounts rows:", err.Error())
+				logger.Log.Info("Error scanning accounts rows:", err.Error())
 				return err
 			}
 			//	fmt.Printf("a: %v\n", a)
@@ -39,7 +39,7 @@ func LoadCheckBalance(datefrom time.Time, acc *[]Account) error {
 
 		// Check for errors from iterating over rows.
 		if err := rows.Err(); err != nil {
-			logger.Log.Errorf("Error iterating accounts rows:", err.Error())
+			logger.Log.Info("Error iterating accounts rows:", err.Error())
 			return err
 		}
 	}
