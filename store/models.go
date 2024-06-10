@@ -107,6 +107,7 @@ type Payment struct {
 	StructCategory                 string         `json:"struct_category,omitempty"`
 	StructType                     string         `json:"struct_type,omitempty"`
 	Token                          sql.NullString `json:"-"`
+	ID_Key                         int64          `json:"-"`
 }
 
 type PaymentResponse struct {

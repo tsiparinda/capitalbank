@@ -19,7 +19,7 @@ func main() {
 	fields := make(map[string]interface{})
 	fields["logLevel"] = logger.Log.GetLevel()
 	// Add more fields dynamically...
-	fields["location"] = "Earth"
+	// fields["location"] = "Earth"
 	logger.Log.WithFields(fields).Info("Program was started")
 
 	var records []csv.CSVRecord

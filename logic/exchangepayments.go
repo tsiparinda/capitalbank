@@ -12,9 +12,9 @@ import (
 )
 
 func StartExchangePayments() {
-	logger.Log.Info("StartExchangePayments started")
+
 	payments := []store.Payment{}
-	
+
 	// send privat
 	err := store.LoadPaymentsPrivat(&payments)
 	if err != nil {
@@ -43,7 +43,7 @@ func StartExchangePayments() {
 					"payment": p,
 				}).Info("StartExchangePayments: Error SendPayment:", err.Error())
 			}
-				store.UpdatePayment(p, rsp)
+			store.UpdatePayment(p, rsp, err)
 		}
 	}
 
