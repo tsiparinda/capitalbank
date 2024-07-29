@@ -41,5 +41,4 @@ utils - some additional general functions
 * csv format doesn't have a statements data - transactions only
 * any new bank format must implement all methods of BankAPI interface 
 * some banks doesn't have an unique ID of transaction, we need find unique combination before saving to DB
-* Info is a mail level fog program's logging
-* Trace log level are used for more verbosing logging
+
