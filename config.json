@@ -1,10 +1,10 @@
 {
     "driverName": "sqlserver",
-    "connectionStr": "server=bold;database=capital2010;Integrated Security=SSPI",
+    "connectionStr": "server=bold\\roznitsa;database=capital2010;Integrated Security=SSPI",
     "TIPS_logLevel": "Trace Debug Info Warn Error Fatal Panic",
-    "logLevel": "Debug",
-    "RequestDaysTrans": 0,
-    "RequestDaysBalance": 10,
+    "logLevel": "Trace",
+    "RequestDaysTrans": 1,
+    "RequestDaysBalance": 1,
     "RowsInPack": 100,
-    "csvimportdir": "\\\\pay\\c$\\IMPORT\\DISTR"
+    "csvimportdir": "\\\\pay\\c$\\IMPORT\\ROZNITSA"
 }

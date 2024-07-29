@@ -24,12 +24,15 @@ func UpdatePayment(p Payment, rsp PaymentResponse, rsperr error) {
 	}
 
 	logger.Log.WithFields(logrus.Fields{
-		"id_key": p.ID_Key,
+		"id_payment": p.ID_Key,
+		"rsp":        string(rspJSON),
+		"err":        rsperr.Error(),
+		"ref_num":    rsp.PaymentPackRef,
 	}).Trace("Run sp.[bank_PaymentsResponseSave]")
 
 	if _, err := db.DB.Exec("exec bank_PaymentsResponseSave @id_payment, @rsp, @err, @ref_num",
 		sql.Named("id_payment", p.ID_Key),
-		sql.Named("rsp", rspJSON),
+		sql.Named("rsp", string(rspJSON)),
 		sql.Named("err", rsperr.Error()),
 		sql.Named("ref_num", rsp.PaymentPackRef)); err != nil {
 		logger.Log.WithFields(logrus.Fields{
