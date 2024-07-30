@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"reflect"
 
 	dec "github.com/shopspring/decimal"
 	"golang.org/x/text/encoding/charmap"
@@ -84,4 +85,15 @@ func EncodeWindows1251(ba []uint8) ([]uint8, error) {
 		return []uint8(""), err
 	}
 	return []uint8(out), nil
+}
+
+func NS(i interface{}) string {
+	if i == nil {
+		return ""
+	}
+	switch reflect.TypeOf(i).Kind() {
+	case reflect.String:
+		return reflect.ValueOf(i).String()
+	}
+	return ""
 }

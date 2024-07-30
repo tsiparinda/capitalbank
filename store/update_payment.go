@@ -3,6 +3,7 @@ package store
 import (
 	"capitalbank/db"
 	"capitalbank/logger"
+	"capitalbank/utils"
 	"database/sql"
 	"encoding/json"
 	"os"
@@ -26,7 +27,7 @@ func UpdatePayment(p Payment, rsp PaymentResponse, rsperr error) {
 	logger.Log.WithFields(logrus.Fields{
 		"id_payment": p.ID_Key,
 		"rsp":        string(rspJSON),
-		"err":        rsperr.Error(),
+		"err":        utils.NS(rsperr.Error()),
 		"ref_num":    rsp.PaymentPackRef,
 	}).Trace("Run sp.[bank_PaymentsResponseSave]")
 
