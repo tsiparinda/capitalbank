@@ -3,7 +3,6 @@ package store
 import (
 	"capitalbank/db"
 	"capitalbank/logger"
-	"capitalbank/utils"
 	"database/sql"
 	"encoding/json"
 	"os"
@@ -24,17 +23,23 @@ func UpdatePayment(p Payment, rsp PaymentResponse, rsperr error) {
 		os.Exit(1)
 	}
 
-	logger.Log.WithFields(logrus.Fields{
-		"id_payment": p.ID_Key,
-		"rsp":        string(rspJSON),
-		"err":        utils.NS(rsperr.Error()),
-		"ref_num":    rsp.PaymentPackRef,
-	}).Trace("Run sp.[bank_PaymentsResponseSave]")
+	// logger.Log.WithFields(logrus.Fields{
+	// 	"id_payment": p.ID_Key,
+	// 	"rsp":        string(rspJSON),
+	// 	"err":        utils.NS(rsperr.Error()),
+	// 	"ref_num":    rsp.PaymentPackRef,
+	// }).Trace("Run sp.[bank_PaymentsResponseSave]")
+	var rsperrstr string
+	if rsperr != nil {
+		rsperrstr = rsperr.Error()
+	} else {
+		rsperrstr = ""
+	}
 
 	if _, err := db.DB.Exec("exec bank_PaymentsResponseSave @id_payment, @rsp, @err, @ref_num",
 		sql.Named("id_payment", p.ID_Key),
 		sql.Named("rsp", string(rspJSON)),
-		sql.Named("err", rsperr.Error()),
+		sql.Named("err", rsperrstr),
 		sql.Named("ref_num", rsp.PaymentPackRef)); err != nil {
 		logger.Log.WithFields(logrus.Fields{
 			"id_key": p.ID_Key,

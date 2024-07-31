@@ -43,6 +43,7 @@ func StartExchangePayments() {
 					"payment": p,
 				}).Info("StartExchangePayments: Error SendPayment:", err.Error())
 			}
+			
 			store.UpdatePayment(p, rsp, err)
 		}
 	}
