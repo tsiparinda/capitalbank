@@ -33,7 +33,7 @@ func UpdatePayment(p Payment, rsp PaymentResponse, rsperr error) {
 	if rsperr != nil {
 		rsperrstr = rsperr.Error()
 	} else {
-		rsperrstr = ""
+		rsperrstr = "OK"
 	}
 
 	if _, err := db.DB.Exec("exec bank_PaymentsResponseSave @id_payment, @rsp, @err, @ref_num",
