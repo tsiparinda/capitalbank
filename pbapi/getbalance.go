@@ -75,6 +75,10 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 				return []store.DataBalance{}, err
 			}
 
+			logger.Log.WithFields(logrus.Fields{
+				"responseData": responseData,
+			}).Trace("Requested balance by account:", a.Account)
+
 			for i, _ := range responseData.Balances {
 				//save data to logs if debug level
 				result, err := utils.StructToMap(responseData.Balances[i])
