@@ -10,7 +10,7 @@ import (
 func LoadAccounts(acc *[]Account) error {
 
 	// Select data from database
-	rows, err := db.DB.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts where fAct=1")
+	rows, err := db.DB.Query("SELECT Direction, Account, Bank, Token, cast(BankRegistr as varchar(50)) FROM bank_accounts_select")
 	if err != nil {
 		logger.Log.Info("Error loading accounts from database:", err.Error())
 		return err
