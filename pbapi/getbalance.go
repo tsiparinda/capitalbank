@@ -73,7 +73,7 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 			if responseData.Status == "ERROR" {
 				logger.Log.WithFields(logrus.Fields{
 					"acc": a.Account,
-					"err": err,
+					"err": responseData,
 				}).Warnf("PrivatBankAPI.GetBalance: Error status has got from Privatbank")
 				return []store.DataBalance{}, err
 			}

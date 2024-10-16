@@ -87,7 +87,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 			if responseData.Status == "ERROR" {
 				logger.Log.WithFields(logrus.Fields{
 					"acc": a.Account,
-					"err": err,
+					"err": responseData,
 				}).Warnf("PrivatBankAPI.GetTransactions: Error status has got from Privatbank")
 				return []store.DataTransaction{}, err
 			}
