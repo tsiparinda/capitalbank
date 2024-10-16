@@ -71,7 +71,10 @@ func (a PrivatBankAPI) GetBalance(datefrom time.Time) ([]store.DataBalance, erro
 			// Unmarshal the data into the struct
 			json.Unmarshal(data, &responseData)
 			if responseData.Status == "ERROR" {
-				logger.Log.Warnf("PrivatBankAPI.GetBalance: Error status has got from Privatbank")
+				logger.Log.WithFields(logrus.Fields{
+					"acc": a.Account,
+					"err": err,
+				}).Warnf("PrivatBankAPI.GetBalance: Error status has got from Privatbank")
 				return []store.DataBalance{}, err
 			}
 
