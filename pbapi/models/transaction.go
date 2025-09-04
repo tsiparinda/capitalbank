@@ -37,6 +37,8 @@ type Transaction struct {
 
 type TransactionResponseData struct {
 	Status        string        `json:"status"`
+	Code          string        `json:"code"`
+	Message       string        `json:"message"`
 	Type          string        `json:"type"`
 	ExistNextPage bool          `json:"exist_next_page"`
 	NextPageID    string        `json:"next_page_id"`

@@ -1,6 +1,6 @@
 {
     "driverName": "sqlserver",
-    "connectionStr": "server=bold\\roznitsa;database=capital2010;Integrated Security=SSPI",
+    "connectionStr": "server=bold;database=capital2010;Integrated Security=SSPI",
     "TIPS_logLevel": "Trace Debug Info Warn Error Fatal Panic",
     "logLevel": "Trace",
     "RequestDaysTrans": 1,
