@@ -1,6 +1,6 @@
 module capitalbank
 
-go 1.20
+go 1.24.0
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.3
