@@ -82,8 +82,6 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 			return []store.DataTransaction{}, err
 		} else {
 			data, _ := io.ReadAll(res.Body) // was ioutil
-			// just save raw JSON 
-			rawJSON := string(data)
 			// Unmarshal the data into the struct
 			json.Unmarshal(data, &responseData)
 			if responseData.Status == "ERROR" {
@@ -115,6 +113,14 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 				if responseData.Transactions[i].PR_PR == "r" && responseData.Transactions[i].FL_REAL == "r" {
 					// summa in coins!!!
 					summa, _ := strconv.ParseInt(strings.ReplaceAll(responseData.Transactions[i].SUM_E, ".", ""), 10, 64)
+					// just save raw JSON 
+					rawJSON, err := json.Marshal( responseData.Transactions[i])
+					if err !=nil {		
+						logger.Log.WithFields(logrus.Fields{
+							"err": err,
+						}).Warnf("Error marshalling RawResponce:", err.Error())
+					}
+
 					datatrans = append(datatrans,
 						store.DataTransaction{
 							Direction:   a.Direction,
@@ -128,7 +134,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							TranType:    responseData.Transactions[i].TRANTYPE,
 							SumTran:     summa,
 							NumDoc:      responseData.Transactions[i].NUM_DOC,
-							RawResponse: rawJSON,
+							RawResponse: string(rawJSON),
 						})
 				}
 			}
