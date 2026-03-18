@@ -120,7 +120,9 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							"err": err,
 						}).Warnf("Error marshalling RawResponce:", err.Error())
 					}
-
+					// create unique identifier of transaction
+					//id := responseData.Transactions[i].ID // 18.03.26 albatros 
+					id := responseData.Transactions[i].REF + "#" + responseData.Transactions[i].REFN
 					datatrans = append(datatrans,
 						store.DataTransaction{
 							Direction:   a.Direction,
@@ -130,7 +132,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							CntrAcc:     responseData.Transactions[i].AUT_CNTR_ACC,
 							Comment:     responseData.Transactions[i].OSND,
 							DateTran:    responseData.Transactions[i].DAT_OD,
-							ID:          responseData.Transactions[i].ID,
+							ID:          id,
 							TranType:    responseData.Transactions[i].TRANTYPE,
 							SumTran:     summa,
 							NumDoc:      responseData.Transactions[i].NUM_DOC,
