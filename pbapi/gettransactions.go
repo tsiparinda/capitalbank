@@ -82,6 +82,8 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 			return []store.DataTransaction{}, err
 		} else {
 			data, _ := io.ReadAll(res.Body) // was ioutil
+			// just save raw JSON 
+			rawJSON := string(data)
 			// Unmarshal the data into the struct
 			json.Unmarshal(data, &responseData)
 			if responseData.Status == "ERROR" {
@@ -126,6 +128,7 @@ func (a PrivatBankAPI) GetTransactions() ([]store.DataTransaction, error) {
 							TranType:    responseData.Transactions[i].TRANTYPE,
 							SumTran:     summa,
 							NumDoc:      responseData.Transactions[i].NUM_DOC,
+							RawResponse: rawJSON,
 						})
 				}
 			}

@@ -46,6 +46,7 @@ type DataTransaction struct {
 	ID          string // unique number
 	TranType    string // D, C
 	NumDoc      string // numdoc for define our payments
+	RawResponse string //raw responce in json
 }
 
 type DataBalance struct {
